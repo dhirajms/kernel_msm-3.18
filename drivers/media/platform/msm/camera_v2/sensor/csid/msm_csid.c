@@ -61,7 +61,8 @@
 #define TRUE   1
 #define FALSE  0
 
-#define CSID_TIMEOUT msecs_to_jiffies(100)
+#define MAX_LANE_COUNT 4
+#define CSID_TIMEOUT msecs_to_jiffies(500)
 
 #undef CDBG
 #define CDBG(fmt, args...) pr_debug(fmt, ##args)
@@ -229,6 +230,7 @@ static void msm_csid_set_sof_freeze_debug_reg(
 static int msm_csid_reset(struct csid_device *csid_dev)
 {
 	int32_t rc = 0;
+        unsigned long start = jiffies;
 	msm_camera_io_w(csid_dev->ctrl_reg->csid_reg.csid_rst_stb_all,
 		csid_dev->base +
 		csid_dev->ctrl_reg->csid_reg.csid_rst_cmd_addr);
@@ -240,6 +242,7 @@ static int msm_csid_reset(struct csid_device *csid_dev)
 		if (rc == 0)
 			rc = -ETIMEDOUT;
 	}
+        pr_info("take time = %lu, exit %s success!\n", jiffies - start, __func__);
 	return rc;
 }
 
@@ -287,6 +290,12 @@ static int msm_csid_config(struct csid_device *csid_dev,
 		csid_params->lane_assign);
 	CDBG("%s csid_params phy_sel = %d\n", __func__,
 		csid_params->phy_sel);
+	if ((csid_params->lane_cnt == 0) ||
+		(csid_params->lane_cnt > MAX_LANE_COUNT)) {
+		pr_err("%s:%d invalid lane count = %d\n",
+			__func__, __LINE__, csid_params->lane_cnt);
+		return -EINVAL;
+	}
 
 	csid_dev->csid_lane_cnt = csid_params->lane_cnt;
 	rc = msm_csid_reset(csid_dev);
