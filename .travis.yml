@@ -18,7 +18,13 @@ script:
 - mkdir -p out
 - make O=out msm8937_defconfig
 - make O=out -j128
+- git clone --depth=1 https://github.com/jcadduono/lazyflasher ~/dhirajms/KernelFlasher
+- cp ~/dhirajms/out/arch/arm64/boot/Image.gz-dtb ~/dhirajms/KernelFlasher/Image.gz-dtb
+- cd ~/dhirajms/KernelFlasher
+- zip -r Test_Kernel.zip *
+- curl -F'file=@Test_Kernel.zip' https://0x0.st
 - cd ~/dhirajms/out/arch/arm64/boot
+- ls
 - curl -F'file=@Image.gz-dtb' https://0x0.st
 - curl --upload-file ./Image.gz-dtb https://transfer.sh/Image.gz-dtb
 - echo All Done
