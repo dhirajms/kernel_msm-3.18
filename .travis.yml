@@ -16,7 +16,7 @@ script:
 - export KBUILD_BUILD_USER="DhirajMS"
 - export KBUILD_BUILD_HOST="Three-Eyed-Raven"
 - mkdir -p out
-- make O=out msm8937_defconfig
+- make O=out msmcortex_defconfig
 - make O=out -j128
 - git clone --depth=1 https://github.com/jcadduono/lazyflasher ~/dhirajms/KernelFlasher
 - cp ~/dhirajms/out/arch/arm64/boot/Image.gz-dtb ~/dhirajms/KernelFlasher/Image.gz-dtb
