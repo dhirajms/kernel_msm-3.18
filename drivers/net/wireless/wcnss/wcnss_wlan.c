@@ -1121,7 +1121,7 @@ void wcnss_log_debug_regs_on_bite(void)
 		pr_debug("wcnss: clock frequency is: %luHz\n", clk_rate);
 
 		if (clk_rate) {
-			wcnss_pronto_dump_regs();
+			wcnss_pronto_log_debug_regs();
 			if (wcnss_get_mux_control())
 				wcnss_log_iris_regs();
 		} else {
@@ -1141,7 +1141,7 @@ void wcnss_reset_fiq(bool clk_chk_en)
 		if (clk_chk_en) {
 			wcnss_log_debug_regs_on_bite();
 		} else {
-			wcnss_pronto_dump_regs();
+			wcnss_pronto_log_debug_regs();
 			if (wcnss_get_mux_control())
 				wcnss_log_iris_regs();
 		}
