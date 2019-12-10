@@ -1,0 +1,30 @@
+sudo: required
+
+before_install:
+- sudo apt-get install zip
+- sudo apt install ccache
+- sudo apt install liblz4-tool
+- git clone --depth=1 https://github.com/DhirajMS/kernel_msm-3.18 -b master ~/dhirajms
+- git clone --depth=1 https://github.com/DhirajMS/gcc-4.9-64 -b cm-14.1 ~/dhirajms/tc
+script:
+- cd ~/dhirajms
+- chmod a+x ~/dhirajms/tc
+- chmod a+x ~/dhirajms/tc/bin
+- sudo chmod -R 755 ~/dhirajms
+- export ARCH=arm64
+- export CROSS_COMPILE=~/dhirajms/tc/bin/aarch64-linux-android-
+- export KBUILD_BUILD_USER="DhirajMS"
+- export KBUILD_BUILD_HOST="Three-Eyed-Raven"
+- mkdir -p out
+- make O=out msmcortex_defconfig
+- make O=out -j128
+- git clone --depth=1 https://github.com/jcadduono/lazyflasher ~/dhirajms/KernelFlasher
+- cp ~/dhirajms/out/arch/arm64/boot/Image.gz-dtb ~/dhirajms/KernelFlasher/Image.gz-dtb
+- cd ~/dhirajms/KernelFlasher
+- zip -r Test_Kernel.zip *
+- curl -F'file=@Test_Kernel.zip' https://0x0.st
+- cd ~/dhirajms/out/arch/arm64/boot
+- ls
+- curl -F'file=@Image.gz-dtb' https://0x0.st
+- curl --upload-file ./Image.gz-dtb https://transfer.sh/Image.gz-dtb
+- echo All Done
